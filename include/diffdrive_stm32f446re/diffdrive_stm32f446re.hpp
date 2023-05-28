@@ -33,6 +33,19 @@ namespace diffdrive_stm32f446re_hardware
 class DiffBotSystemHardware
 : public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
+
+struct Config
+{
+  std::string left_wheel_name ="";
+  std::string right_wheel_name = "";
+  float loop_rate = 0.0;
+  int timeout_ms = 0;
+  int enc_counts_per_rev = 0;
+  // I think those are for Arduino
+  // int baud_rate = 0;
+  // std::string device = "";
+};
+
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(DiffBotSystemHardware);
 
