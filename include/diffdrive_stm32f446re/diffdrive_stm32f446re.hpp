@@ -27,6 +27,7 @@
 #include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "rclcpp/macros.hpp"
 #include "diffdrive_stm32f446re/visibility_control.h"
+#include "diffdrive_stm32f446re/wheel.h"
 
 namespace diffdrive_stm32f446re_hardware
 {
@@ -71,6 +72,8 @@ public:
 
 private:
   Config cfg_;
+  Wheel wheel_l_;
+  Wheel wheel_r_;
 };
 
 }  // namespace diffdrive_stm32f446re_hardware

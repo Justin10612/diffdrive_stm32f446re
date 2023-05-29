@@ -41,6 +41,9 @@ hardware_interface::return_type DiffBotSystemHardware::configure(
   // std::string device = "";
   // int timeout_ms = 0; 
 
+  wheel_l_.setup(cfg_.left_wheel_name, cfg_.enc_counts_per_rev);
+  wheel_r_.setup(cfg_.right_wheel_name, cfg_.enc_counts_per_rev);
+
   for (const hardware_interface::ComponentInfo & joint : info_.joints)
   {
     // DiffBotSystem has exactly two states and one command interface on each joint
