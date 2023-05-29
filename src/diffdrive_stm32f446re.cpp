@@ -36,7 +36,7 @@ VelocityPublisher::VelocityPublisher() : Node("cmd_vel_pub")
 void VelocityPublisher::publishData()
 {
   auto message = std_msgs::msg::Float32();
-  message.data = 2;
+  message.data = 2.0;
   publisher_->publish(message);
 }
 
