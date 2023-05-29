@@ -18,6 +18,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <std_msgs/msg/float32.hpp>
 
 #include "hardware_interface/base_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -26,9 +27,11 @@
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "rclcpp/macros.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+#include "rclcpp_lifecycle/state.hpp"
 #include "diffdrive_stm32f446re/visibility_control.h"
 #include "diffdrive_stm32f446re/wheel.hpp"
-#include "diffdrive_stm32f446re/cmd_vel_pub.hpp"
 
 namespace diffdrive_stm32f446re_hardware
 {
@@ -40,7 +43,7 @@ class VelocityPublisher : public rclcpp::Node  //the node definition for the pub
     void publishData();
 
   private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr publisher_;
 
 };
 

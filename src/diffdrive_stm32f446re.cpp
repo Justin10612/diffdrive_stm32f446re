@@ -22,19 +22,21 @@
 #include "diffdrive_stm32f446re/diffdrive_stm32f446re.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include <rclcpp_components/register_node_macro.hpp>
+
 
 namespace diffdrive_stm32f446re_hardware
 {
 
-VelocityPublisher::VelocityPublisher() : Node("hardware_command_publisher")
+VelocityPublisher::VelocityPublisher() : Node("cmd_vel_pub")
 {
-  publisher_ = this->create_publisher<std_msgs::msg::String>("test_topic", 10);
+  publisher_ = this->create_publisher<std_msgs::msg::Float32>("wheel_cmd_vel", 10);
 }
 
 void VelocityPublisher::publishData()
 {
-  auto message = std_msgs::msg::String();
-  message.data = "Hello, world! ";
+  auto message = std_msgs::msg::Float32();
+  message.data = 2;
   publisher_->publish(message);
 }
 
@@ -61,56 +63,6 @@ hardware_interface::return_type DiffBotSystemHardware::configure(
 
   wheel_l_.setup(cfg_.left_wheel_name, cfg_.enc_counts_per_rev);
   wheel_r_.setup(cfg_.right_wheel_name, cfg_.enc_counts_per_rev);
-
-  for (const hardware_interface::ComponentInfo & joint : info_.joints)
-  {
-    // DiffBotSystem has exactly two states and one command interface on each joint
-    if (joint.command_interfaces.size() != 1)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
-        "Joint '%s' has %d command interfaces found. 1 expected.", joint.name.c_str(),
-        joint.command_interfaces.size());
-      return hardware_interface::return_type::ERROR;
-    }
-
-    if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
-        "Joint '%s' have %s command interfaces found. '%s' expected.", joint.name.c_str(),
-        joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY);
-      return hardware_interface::return_type::ERROR;
-    }
-
-    if (joint.state_interfaces.size() != 2)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
-        "Joint '%s' has %d state interface. 2 expected.", joint.name.c_str(),
-        joint.state_interfaces.size());
-      return hardware_interface::return_type::ERROR;
-    }
-
-    if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
-        "Joint '%s' have '%s' as first state interface. '%s' and '%s' expected.",
-        joint.name.c_str(), joint.state_interfaces[0].name.c_str(),
-        hardware_interface::HW_IF_POSITION);
-      return hardware_interface::return_type::ERROR;
-    }
-
-    if (joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
-    {
-      RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
-        "Joint '%s' have '%s' as second state interface. '%s' expected.", joint.name.c_str(),
-        joint.state_interfaces[1].name.c_str(), hardware_interface::HW_IF_VELOCITY);
-      return hardware_interface::return_type::ERROR;
-    }
-  }
 
   status_ = hardware_interface::status::CONFIGURED;
   return hardware_interface::return_type::OK;
