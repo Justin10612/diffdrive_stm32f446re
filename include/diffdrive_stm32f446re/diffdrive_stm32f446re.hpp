@@ -30,8 +30,7 @@
 
 namespace diffdrive_stm32f446re_hardware
 {
-class DiffBotSystemHardware
-: public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
+class DiffBotSystemHardware: public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
 
 struct Config
@@ -47,7 +46,7 @@ struct Config
 };
 
 public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(DiffBotSystemHardware);
+  RCLCPP_SHARED_PTR_DEFINITIONS(DiffBotSystemHardware)
 
   DIFFDRIVE_STM32F446RE_PUBLIC
   hardware_interface::return_type configure(const hardware_interface::HardwareInfo & info) override;
