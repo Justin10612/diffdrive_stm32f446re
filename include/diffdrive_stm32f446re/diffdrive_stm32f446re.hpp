@@ -28,9 +28,22 @@
 #include "rclcpp/macros.hpp"
 #include "diffdrive_stm32f446re/visibility_control.h"
 #include "diffdrive_stm32f446re/wheel.hpp"
+#include "diffdrive_stm32f446re/cmd_vel_pub.hpp"
 
 namespace diffdrive_stm32f446re_hardware
 {
+
+class VelocityPublisher : public rclcpp::Node  //the node definition for the publisher to talk to micro-ROS agent
+{
+  public:
+    VelocityPublisher();
+    void publishData();
+
+  private:
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+
+};
+
 class DiffBotSystemHardware: public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
 
@@ -70,10 +83,14 @@ public:
   DIFFDRIVE_STM32F446RE_PUBLIC
   hardware_interface::return_type write() override;
 
+  std::shared_ptr<VelocityPublisher> hw_cmd_pub_;    //make the publisher node a member
+
+
 private:
   Config cfg_;
   Wheel wheel_l_;
   Wheel wheel_r_;
+  VelocityPublisher vel_pub_;
 };
 
 }  // namespace diffdrive_stm32f446re_hardware

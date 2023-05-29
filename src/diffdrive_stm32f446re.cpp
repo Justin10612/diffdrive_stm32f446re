@@ -21,9 +21,24 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "diffdrive_stm32f446re/diffdrive_stm32f446re.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/float32.hpp"
 
 namespace diffdrive_stm32f446re_hardware
 {
+
+VelocityPublisher::VelocityPublisher() : Node("hardware_command_publisher")
+{
+  publisher_ = this->create_publisher<std_msgs::msg::String>("test_topic", 10);
+}
+
+void VelocityPublisher::publishData()
+{
+  auto message = std_msgs::msg::String();
+  message.data = "Hello, world! ";
+  publisher_->publish(message);
+}
+
+
 hardware_interface::return_type DiffBotSystemHardware::configure(
   const hardware_interface::HardwareInfo & info)
 {
@@ -31,6 +46,9 @@ hardware_interface::return_type DiffBotSystemHardware::configure(
   {
     return hardware_interface::return_type::ERROR;
   }
+
+  //fire up the publisher node
+  hw_cmd_pub_ = std::make_shared<VelocityPublisher>(); 
 
   cfg_.left_wheel_name  = info_.hardware_parameters["left_wheel_name"];
   cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
@@ -157,7 +175,7 @@ hardware_interface::return_type diffdrive_stm32f446re_hardware::DiffBotSystemHar
 {
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
   // Follow the toturial: // comms_.set_motor_values();
-
+  hw_cmd_pub_ -> publishData();
   return hardware_interface::return_type::OK;
 }
 
