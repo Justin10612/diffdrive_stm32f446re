@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ros2_control_demo_hardware/diffbot_system.hpp"
-
 #include <chrono>
 #include <cmath>
 #include <limits>
@@ -21,27 +19,27 @@
 #include <vector>
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
+#include "diffdrive_stm32f446re/diffdrive_stm32f446re.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace ros2_control_demo_hardware
+namespace diffdrive_stm32f446re_hardware
 {
 hardware_interface::return_type DiffBotSystemHardware::configure(
   const hardware_interface::HardwareInfo & info)
 {
-  base_x_ = 0.0;
-  base_y_ = 0.0;
-  base_theta_ = 0.0;
-
   if (configure_default(info) != hardware_interface::return_type::OK)
   {
     return hardware_interface::return_type::ERROR;
   }
 
-  hw_start_sec_ = stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
-  hw_stop_sec_ = stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
-  hw_positions_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-  hw_velocities_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-  hw_commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+  cfg_.left_wheel_name  = info_.hardware_parameters["left_wheel_name"];
+  cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
+  cfg_.loop_rate  = stof(info_.hardware_parameters["loop_rate"]);
+  cfg_.enc_counts_per_rev  = stoi(info_.hardware_parameters["enc_counts_per_rev"]);
+  // I think those are for Arduino
+  // int baud_rate = 0;
+  // std::string device = "";
+  // int timeout_ms = 0; 
 
   for (const hardware_interface::ComponentInfo & joint : info_.joints)
   {
@@ -100,13 +98,13 @@ hardware_interface::return_type DiffBotSystemHardware::configure(
 std::vector<hardware_interface::StateInterface> DiffBotSystemHardware::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
-  for (auto i = 0u; i < info_.joints.size(); i++)
-  {
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_velocities_[i]));
-  }
+  // for (auto i = 0u; i < info_.joints.size(); i++)
+  // {
+  //   state_interfaces.emplace_back(hardware_interface::StateInterface(
+  //     info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
+  //   state_interfaces.emplace_back(hardware_interface::StateInterface(
+  //     info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_velocities_[i]));
+  // }
 
   return state_interfaces;
 }
@@ -114,11 +112,11 @@ std::vector<hardware_interface::StateInterface> DiffBotSystemHardware::export_st
 std::vector<hardware_interface::CommandInterface> DiffBotSystemHardware::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
-  for (auto i = 0u; i < info_.joints.size(); i++)
-  {
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_commands_[i]));
-  }
+  // for (auto i = 0u; i < info_.joints.size(); i++)
+  // {
+  //   command_interfaces.emplace_back(hardware_interface::CommandInterface(
+  //     info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_commands_[i]));
+  // }
 
   return command_interfaces;
 }
@@ -149,7 +147,7 @@ hardware_interface::return_type DiffBotSystemHardware::read()
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type ros2_control_demo_hardware::DiffBotSystemHardware::write()
+hardware_interface::return_type diffdrive_stm32f446re_hardware::DiffBotSystemHardware::write()
 {
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
   // Follow the toturial: // comms_.set_motor_values();
@@ -157,8 +155,9 @@ hardware_interface::return_type ros2_control_demo_hardware::DiffBotSystemHardwar
   return hardware_interface::return_type::OK;
 }
 
-}  // namespace ros2_control_demo_hardware
+}  // namespace diffdrive_stm32f446re_hardware
 
 #include "pluginlib/class_list_macros.hpp"
+
 PLUGINLIB_EXPORT_CLASS(
-  ros2_control_demo_hardware::DiffBotSystemHardware, hardware_interface::SystemInterface)
+  diffdrive_stm32f446re_hardware::DiffBotSystemHardware, hardware_interface::SystemInterface)
