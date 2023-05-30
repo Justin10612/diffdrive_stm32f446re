@@ -18,7 +18,9 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <std_msgs/msg/float32.hpp>
+
+#include "std_msgs/msg/int32.hpp"
+#include "geometry_msgs/msg/vector3.hpp"
 
 #include "hardware_interface/base_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -40,10 +42,10 @@ class VelocityPublisher : public rclcpp::Node  //the node definition for the pub
 {
   public:
     VelocityPublisher();
-    void publishData();
+    void publishData(float l_input, float r_input);
 
   private:
-    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr publisher_;
+    rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr publisher_;
 
 };
 
@@ -56,10 +58,6 @@ struct Config
   std::string right_wheel_name = "";
   float loop_rate = 0.0;
   int enc_counts_per_rev = 0;
-  // I think those are for Arduino
-  // int baud_rate = 0;
-  // std::string device = "";
-  // int timeout_ms = 0; 
 };
 
 public:
@@ -86,14 +84,13 @@ public:
   DIFFDRIVE_STM32F446RE_PUBLIC
   hardware_interface::return_type write() override;
 
-  std::shared_ptr<VelocityPublisher> hw_cmd_pub_;    //make the publisher node a member
+  std::shared_ptr<VelocityPublisher> hw_rps_pub_;    //make the publisher node a member
 
 
 private:
   Config cfg_;
   Wheel wheel_l_;
   Wheel wheel_r_;
-  VelocityPublisher vel_pub_;
 };
 
 }  // namespace diffdrive_stm32f446re_hardware

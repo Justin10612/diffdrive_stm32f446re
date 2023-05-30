@@ -22,6 +22,7 @@
 #include "diffdrive_stm32f446re/diffdrive_stm32f446re.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
+#include "geometry_msgs/msg/vector3.hpp"
 #include <rclcpp_components/register_node_macro.hpp>
 
 
@@ -30,13 +31,14 @@ namespace diffdrive_stm32f446re_hardware
 
 VelocityPublisher::VelocityPublisher() : Node("cmd_vel_pub")
 {
-  publisher_ = this->create_publisher<std_msgs::msg::Int32>("wheel_cmd_vel", 10);
+  publisher_ = this->create_publisher<geometry_msgs::msg::Vector3>("wheel_cmd_vel", 10);
 }
 
-void VelocityPublisher::publishData(int input)
+void VelocityPublisher::publishData(float l_input, float r_input)
 {
-  auto message = std_msgs::msg::Int32();
-  message.data = input;
+  auto message = geometry_msgs::msg::Vector3();
+  message.x = l_input;
+  message.y = r_input;
   publisher_->publish(message);
 }
 
@@ -56,10 +58,6 @@ hardware_interface::return_type DiffBotSystemHardware::configure(
   cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
   cfg_.loop_rate  = stof(info_.hardware_parameters["loop_rate"]);
   cfg_.enc_counts_per_rev  = stoi(info_.hardware_parameters["enc_counts_per_rev"]);
-  // I think those are for Arduino
-  // int baud_rate = 0;
-  // std::string device = "";
-  // int timeout_ms = 0; 
 
   wheel_l_.setup(cfg_.left_wheel_name, cfg_.enc_counts_per_rev);
   wheel_r_.setup(cfg_.right_wheel_name, cfg_.enc_counts_per_rev);
@@ -126,8 +124,9 @@ hardware_interface::return_type DiffBotSystemHardware::read()
 hardware_interface::return_type diffdrive_stm32f446re_hardware::DiffBotSystemHardware::write()
 {
   RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
-  float l_rps = wheel_l_.cmd / M_PI;
-  hw_rps_pub_ -> publishData(l_rps);
+  float l_rps = wheel_l_.cmd;
+  float r_rps = wheel_r_.cmd;
+  hw_rps_pub_ -> publishData(l_rps, r_rps);
   return hardware_interface::return_type::OK;
 }
 

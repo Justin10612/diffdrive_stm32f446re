@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(diffdrive_stm32f446re)
 
-# # Default to C99
-# if(NOT CMAKE_C_STANDARD)
-#   set(CMAKE_C_STANDARD 99)
-# endif()
-
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
@@ -15,15 +10,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+## find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
-
 
 ## COMPILE
 add_library(
@@ -36,8 +27,7 @@ target_include_directories(
   PRIVATE
   include
 )
-ament_target_dependencies(
-  ${PROJECT_NAME}
+ament_target_dependencies(${PROJECT_NAME}
   hardware_interface
   pluginlib
   rclcpp
@@ -53,6 +43,10 @@ install(
 install(
   DIRECTORY include/
   DESTINATION include
+)
+install(
+  DIRECTORY msg src 
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
