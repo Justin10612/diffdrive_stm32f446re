@@ -45,7 +45,7 @@ install(
   DESTINATION include
 )
 install(
-  DIRECTORY msg src 
+  DIRECTORY src 
   DESTINATION share/${PROJECT_NAME}
 )
 
