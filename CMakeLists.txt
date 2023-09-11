@@ -1,3 +1,5 @@
+cmake_policy(SET CMP0148 NEW)
+
 cmake_minimum_required(VERSION 3.5)
 project(diffdrive_stm32f446re)
 
