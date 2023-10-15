@@ -115,15 +115,14 @@ hardware_interface::return_type DiffBotSystemHardware::stop()
 
 hardware_interface::return_type DiffBotSystemHardware::read()
 {
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Reading...");
-  // Follow the toturial: // comms_.read_encoder_values();
+  // RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Reading...");
 
   return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type diffdrive_stm32f446re_hardware::DiffBotSystemHardware::write()
 {
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
+  // RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
   float l_rps = wheel_l_.cmd;
   float r_rps = wheel_r_.cmd;
   hw_rps_pub_ -> publishData(l_rps, r_rps);
