@@ -29,7 +29,7 @@
 namespace diffdrive_stm32f446re_hardware
 {
 
-VelocityPublisher::VelocityPublisher() : Node("cmd_vel_pub")
+VelocityPublisher::VelocityPublisher() : Node("stm32_hwif")
 {
   publisher_ = this->create_publisher<geometry_msgs::msg::Vector3>("wheel_cmd_vel", 10);
 }
