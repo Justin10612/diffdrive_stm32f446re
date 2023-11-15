@@ -29,9 +29,10 @@
 namespace diffdrive_stm32f446re_hardware
 {
 
+// Create Velocity Publisher
 VelocityPublisher::VelocityPublisher() : Node("stm32_hwif")
 {
-  publisher_ = this->create_publisher<geometry_msgs::msg::Vector3>("wheel_cmd_vel", 10);
+  vel_publisher_ = this->create_publisher<geometry_msgs::msg::Vector3>("wheel_cmd_vel", 10);
 }
 
 void VelocityPublisher::publishData(float l_input, float r_input)
@@ -39,9 +40,8 @@ void VelocityPublisher::publishData(float l_input, float r_input)
   auto message = geometry_msgs::msg::Vector3();
   message.x = l_input;
   message.y = r_input;
-  publisher_->publish(message);
+  vel_publisher_->publish(message);
 }
-
 
 hardware_interface::return_type DiffBotSystemHardware::configure(
   const hardware_interface::HardwareInfo & info)

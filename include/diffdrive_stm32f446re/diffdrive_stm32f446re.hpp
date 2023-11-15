@@ -38,16 +38,16 @@
 namespace diffdrive_stm32f446re_hardware
 {
 
+// Publisher
 class VelocityPublisher : public rclcpp::Node  //the node definition for the publisher to talk to micro-ROS agent
 {
+  private:
+    rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr vel_publisher_;
   public:
     VelocityPublisher();
     void publishData(float l_input, float r_input);
-
-  private:
-    rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr publisher_;
-
 };
+
 
 class DiffBotSystemHardware: public hardware_interface::BaseInterface<hardware_interface::SystemInterface>
 {
